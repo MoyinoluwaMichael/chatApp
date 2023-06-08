@@ -6,8 +6,7 @@ from chat_app.models import User, Request, Chat, Notification
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'firstname', 'lastname', 'email_address', 'username', 'password',
-                  'profile_picture', 'last_seen', 'request', 'notification']
+        fields = ['id', 'email', 'username', 'password']
 
 
 class RequestSerializer(serializers.ModelSerializer):
