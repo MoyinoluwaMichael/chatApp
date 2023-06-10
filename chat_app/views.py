@@ -1,11 +1,8 @@
 import random
-from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-
-from chat_app.models import User
 from chat_app.serializers import UserSerializer
 
 otp = ""
@@ -48,13 +45,3 @@ class ConfirmOTPView(APIView):
             return Response({'message': 'Invalid OTP code'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginView(APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        if email and password:
-            user = authenticate(username=email, password=password)
-            if user is not None:
-                login(request, user)
-                return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
-        return Response({'message': 'Invalid login credentials'}, status=status.HTTP_401_UNAUTHORIZED)
