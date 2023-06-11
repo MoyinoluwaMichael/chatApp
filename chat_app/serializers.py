@@ -1,9 +1,21 @@
 from rest_framework import serializers
 
-from chat_app.models import User, Request, Chat, Notification
+from chat_app.models import Request, Chat, Notification
+
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+
+User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User.objects.create_user(password=password, **validated_data)
+        return user
+
     class Meta:
         model = User
         fields = ['id', 'email', 'username', 'password']
