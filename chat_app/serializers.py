@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from chat_app.models import Request, Chat, Notification
+from chat_app.models import Request, Chat, Notification, TempUser
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -37,3 +37,9 @@ class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = ['id', 'sender_username', 'recipient_username', 'message']
+
+
+class TempUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TempUser
+        fields = ['email', 'username', 'password', 'otp']

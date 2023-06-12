@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'chat_app',
+
 ]
 
 MIDDLEWARE = [
@@ -77,12 +78,22 @@ WSGI_APPLICATION = 'chat_app_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Database settings
+# Define the path to the text file
+file_path = os.path.join(BASE_DIR, '', 'secret.txt')
+
+# Read the contents of the text file
+with open(file_path, 'r') as file:
+    credentials = file.readlines()
+
+# Extract the username and password from the contents
+db_password = credentials[1].strip()
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'chat_app',
-        'USER': '',
-        'PASSWORD': '',
+        'USER': 'root',
+        'PASSWORD': db_password,
         'HOST': 'localhost',
     }
 }
@@ -145,3 +156,19 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+email = credentials[0].strip()
+app_password = credentials[2].strip()
+# DEFAULT_FROM_EMAIL = 'milestone@example.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = email
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

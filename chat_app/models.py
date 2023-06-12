@@ -41,3 +41,10 @@ class Chat(models.Model):
     recipient_username = models.CharField(max_length=250, blank=False)
     message = models.CharField(max_length=1000, blank=False)
     time_created = models.DateTimeField(auto_now_add=True)
+
+
+class TempUser(models.Model):
+    email = models.CharField(max_length=150)
+    username = models.CharField(max_length=150)
+    password = models.CharField(max_length=150)
+    otp = models.CharField(max_length=4)
