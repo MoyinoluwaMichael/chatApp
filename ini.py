@@ -1,17 +1,13 @@
-import os
+# import socket
+#
+# s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# s.bind((socket.gethostname(), 6999))
+# s.listen(5)
+#
+# while True:
 
-from chat_app_project.settings import BASE_DIR
-
-print(BASE_DIR)
-
-file_path = os.path.join(BASE_DIR, '', 'secret.txt')
-
-with open(file_path, 'r') as file:
-    credentials = file.readlines()
-
-# Extract the username and password from the contents
-username = credentials[0].strip()
-password = credentials[1].strip()
-
-print(username)
-print(password)
+#     clientSocket, address = s.accept()
+#     print(f"Established a connection with {address}")
+#     # print(clientSocket.recv(2000))
+#     clientSocket.send(bytes("Hello World", "utf-8"))
+#     clientSocket.close()
