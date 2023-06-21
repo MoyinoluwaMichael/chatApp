@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'chat_app',
-
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -172,3 +172,6 @@ EMAIL_HOST_PASSWORD = app_password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Socket
+ASGI_APPLICATION = 'chat_app_project.routing.application'

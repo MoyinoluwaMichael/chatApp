@@ -36,7 +36,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
-        fields = ['id', 'sender_username', 'recipient_username', 'message']
+        fields = ['id', 'sender_username', 'recipient_username', 'message', 'time_created']
 
 
 class TempUserSerializer(serializers.ModelSerializer):

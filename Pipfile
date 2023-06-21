@@ -9,6 +9,8 @@ djangorestframework = "*"
 mysqlclient = "*"
 djoser = "*"
 djangorestframework-simplejwt = "*"
+channels = "*"
+daphne = "*"
 
 [dev-packages]
 

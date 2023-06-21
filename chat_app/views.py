@@ -4,11 +4,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from chat_app.dtos import RegistrationRequest
-from chat_app.models import User, TempUser
+from chat_app.models import User, TempUser, Chat
 from chat_app.repositories import save_registration_request, find_registration_request_by_email, delete_temp_user
-from chat_app.serializers import UserSerializer, TempUserSerializer
+from chat_app.serializers import UserSerializer, TempUserSerializer, ChatSerializer
 from chat_app.utils import sendOnboardingMail
 
 
@@ -50,7 +51,7 @@ class RegisterUserView(APIView):
         serializers.is_valid(raise_exception=True)
         serializers.save()
         sendOnboardingMail(username, otp, email)
-        return Response({'message': 'Success.'},
+        return Response({'message': 'Success'},
                         status=status.HTTP_201_CREATED)
 
 
@@ -58,13 +59,13 @@ class CompleteRegistration(APIView):
     def post(self, request):
         email = request.data.get("email")
         otp = request.data.get("otp")
-        temp_user = get_object_or_404(TempUser, email=email)
-        serializer = UserSerializer(data=temp_user.__dict__)
-        if temp_user.otp == otp:
+        temp_user = TempUser.objects.filter(email=email, otp=otp)
+        serializer = UserSerializer(data=temp_user[0].__dict__)
+        if temp_user.exists():
             serializer.is_valid(raise_exception=True)
             serializer.save()
             temp_user.delete()
-            return Response({'message': 'Registration successful.'},
+            return Response({'message': 'Registration successful'},
                             status=status.HTTP_201_CREATED)
         else:
             return Response({'message': 'Invalid OTP code'}, status=status.HTTP_400_BAD_REQUEST)
@@ -78,3 +79,32 @@ class CompleteRegistration(APIView):
         user = TempUser.objects.all()
         user.delete()
         return Response("Deleted successfully")
+
+
+class AllChatsRoute(ModelViewSet):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+    def list(self, request, *args, **kwargs):
+        chats: list[Chat] = Chat.objects.all()
+        username: str = request.data.get("username")
+        friend_username: str = request.data.get("friendUsername")
+        if username == "" or username is None:
+            serializer = ChatSerializer(chats, many=True)
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        username = username.lower()
+        friend_username = friend_username.lower()
+        chat_box: list[Chat] = []
+        for chat in chats:
+            sender = str(chat.sender_username).lower()
+            recipient = str(chat.recipient_username).lower()
+            if (sender == username and recipient == friend_username) or (sender == friend_username and recipient == username):
+                chat_box.append(chat)
+        serializer = ChatSerializer(chat_box, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        if request.data.get("username") is not None:
+            return self.list(request, *args, **kwargs)
+        else:
+            return super().create(request, *args, **kwargs)

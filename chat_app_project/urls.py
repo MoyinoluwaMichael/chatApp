@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 import chat_app
+from chat_app import routing
 
 admin.site.site_header = 'Chat_APP'
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path('', include('chat_app.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path('socket/', include(routing.websocket_urlpatterns)),
 ]

@@ -1,4 +1,5 @@
 import os
+from smtplib import SMTPConnectError
 
 from django.core.mail import send_mail
 
@@ -18,4 +19,7 @@ def sendOnboardingMail(username: str, otp: str, email) -> None:
               ' Use this OTP {} to verify your account.'.format(username, otp)
     from_email = SYSTEM_EMAIL_ADDRESS
     recipient_list = [email]
-    send_mail(subject, message, from_email, recipient_list)
+    try:
+        send_mail(subject, message, from_email, recipient_list)
+    except SMTPConnectError:
+        print("Service unavailable. Unable to send mail.")
